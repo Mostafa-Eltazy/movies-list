@@ -1,23 +1,56 @@
-import logo from './logo.svg';
+import 'bootstrap/dist/css/bootstrap.min.css'
+import Movies from './components/Movies'
+import Pagination from './components/Pagination'
+import {getMovies} from './components/fakeMovieService'
+import {useState, useEffect} from 'react'
 import './App.css';
+import { getGenres } from './components/fakeGereService'
 
 function App() {
+  const [movies, setMovies] = useState(getMovies())
+  const [genres, setgenres] = useState(getGenres())
+  const [liked, setLiked] = useState()
+  const [pagesize, setPageSize] = useState(4)
+  const [currentPage, setCurrentPage] = useState(1)
+  // useEffect(()=>{
+  //   setMovies(getMovies());
+  //   setgenres(getGenres())
+  // })
+    
+    const handleLike = (id) => {
+      setMovies(movies.map(movie=>
+        id === movie.id ?
+        {...movie, liked:!movie.liked}
+        :movie));
+    }
+    const handleDelete = (movie) => {
+        
+    setMovies(movies.filter(m=>m.id !== movie.id));
+    }
+    const handlePagePagination = (page) =>{
+      setCurrentPage(page)
+      console.log(page);
+    }
+    const handleGenreSelect = () =>{
+      console.log(genres)
+    }
+    
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='container'>
+      {movies.length === 0 ?
+      <p>No Movies to Show</p>
+      : <Movies 
+        movies={movies}
+        onDelete={handleDelete}
+        handleLike={handleLike}
+        liked={liked}
+        onPagePagination={handlePagePagination}
+        moviesNumber={movies.length}
+        pageSize={pagesize}
+        currentPage={currentPage}
+        genres={genres}
+        onGenreSelect={handleGenreSelect}/>
+      }
     </div>
   );
 }
