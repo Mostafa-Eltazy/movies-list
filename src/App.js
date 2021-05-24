@@ -11,7 +11,7 @@ function App() {
   const [genres, setgenres] = useState(getGenres())
   const [liked, setLiked] = useState()
   const [pagesize, setPageSize] = useState(4)
-  const [currentPage, setCurrentPage] = useState(1)
+  
   // useEffect(()=>{
   //   setMovies(getMovies());
   //   setgenres(getGenres())
@@ -27,14 +27,8 @@ function App() {
         
     setMovies(movies.filter(m=>m.id !== movie.id));
     }
-    const handlePagePagination = (page) =>{
-      setCurrentPage(page)
-      console.log(page);
-    }
-    const handleGenreSelect = () =>{
-      console.log(genres)
-    }
-    
+
+
   return (
     <div className='container'>
       {movies.length === 0 ?
@@ -44,12 +38,9 @@ function App() {
         onDelete={handleDelete}
         handleLike={handleLike}
         liked={liked}
-        onPagePagination={handlePagePagination}
         moviesNumber={movies.length}
         pageSize={pagesize}
-        currentPage={currentPage}
-        genres={genres}
-        onGenreSelect={handleGenreSelect}/>
+        genres={genres}/>
       }
     </div>
   );

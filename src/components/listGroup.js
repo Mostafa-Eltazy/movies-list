@@ -1,12 +1,19 @@
 import React from 'react'
+import {useState} from 'react'
+import {filtered} from '../components/Movies'
 
-const ListGroup = ({genres, handleGenreSelect}) => {
-    console.log(genres)
+const ListGroup = ({genres,selectedGenre, handleGenreSelect}) => {
     return (
         <div>
            <ul className="list-group">
+           <li onClick={()=>handleGenreSelect('')}
+                    className={!selectedGenre ? "list-group-item active":"list-group-item"}>All
+                    </li>
                 {genres.map(g => 
-                    <li key={g.id} className="list-group-item">{g.name}</li>
+                    <li onClick={()=>handleGenreSelect(g)}
+                    key={g.id}
+                    className={selectedGenre.id === g.id ? "list-group-item active":"list-group-item"}>{g.name}
+                    </li>
                 )}
           </ul>
           

@@ -9,6 +9,7 @@ const Pagination = ({onPagePagination, pageSize, moviesNumber,currentPage}) => {
     const pages =_.range(1,pageCount+1)
     
     
+    
     return (
         <div>
             <nav aria-label="Page navigation example">
