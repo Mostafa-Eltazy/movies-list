@@ -1,11 +1,13 @@
 import React from 'react'
 import LikeIcon from './LikeIcon'
 
-const MoviesTable = ({movies, onLike, onDelete,onSorting}) => {
+
+const MoviesTable = ({movies, onLike, onDelete,onSorting, sortColumn, order}) => {
+    
     return (
         <div>
-            <table className='table'>
-                    <thead>
+            <table className='table'>    
+                <thead>
                         <tr>
                             <th onClick={()=>onSorting('title')}>Title</th>
                             <th onClick={()=>onSorting('genre.id')}>Genre</th>
@@ -14,8 +16,8 @@ const MoviesTable = ({movies, onLike, onDelete,onSorting}) => {
                             <th></th>
                             <th></th>
                         </tr>
-                    </thead>
-                    <tbody>
+                </thead>
+                <tbody>
                     {movies.map(movie => (
                     
                     <tr key={movie.id}>    
@@ -27,8 +29,8 @@ const MoviesTable = ({movies, onLike, onDelete,onSorting}) => {
                         <td><button onClick={()=>onDelete(movie)} className="btn btn-danger btn-sm">Delete</button></td>
                     </tr>
                     ))}
-                    </tbody>
-                </table>
+                </tbody>
+            </table>
                 
         </div>
     )
