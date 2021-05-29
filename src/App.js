@@ -1,5 +1,4 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
-
 import {Route, Switch, Redirect} from 'react-router-dom'
 import Movies from './components/Movies'
 import Customers from './components/Customers';
@@ -7,6 +6,7 @@ import Rentals from './components/Rentals';
 import NotFound from './components/NotFound';
 import NavBar from './components/NavBar';
 import './App.css';
+import MoviesForum from './components/MoviesForum';
 
 function App() {
   
@@ -23,6 +23,7 @@ function App() {
       <NavBar/>
       <div className='container'>
         <Switch>
+          <Route path="/movies/:id" component={MoviesForum}/>
           <Route path="/movies" component={Movies}/>
           <Route path="/customers" component={Customers}/>
           <Route path="/rentals" component={Rentals}/>

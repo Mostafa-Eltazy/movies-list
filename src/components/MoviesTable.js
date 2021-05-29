@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link, NavLink } from 'react-router-dom'
 import LikeIcon from './LikeIcon'
 
 
@@ -21,7 +22,7 @@ const MoviesTable = ({movies, onLike, onDelete,onSorting, sortColumn, order}) =>
                     {movies.map(movie => (
                     
                     <tr key={movie.id}>    
-                        <td>{movie.title}</td>
+                        <td><Link className="nav-link" to={`/movies/${movie.id}`}>{movie.title}</Link></td>
                         <td>{movie.genre.name}</td>
                         <td>{movie.numberInStock}</td>
                         <td>{movie.dailyRentalRate}</td>
