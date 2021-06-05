@@ -1,5 +1,5 @@
 import React from 'react'
-import LikeIcon from './LikeIcon'
+import { Link } from 'react-router-dom'
 import {getMovies} from './fakeMovieService'
 import {getGenres} from './fakeGereService'
 import {useState, useEffect} from 'react'
@@ -19,6 +19,8 @@ const Movies = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [sortColumn, setsortColumn] = useState('title')
     const [order, setOrder] = useState('asc')
+    
+    
   // functions
     const performingFiltration = (selectedGenre)=>{
         return selectedGenre ? movies.filter(m=> m.genre.id === selectedGenre.id) : movies
@@ -70,6 +72,7 @@ const Movies = () => {
               handleGenreSelect={handleGenreSelect}/>    
             </div>
             <div className="col">
+                <Link className="btn btn-primary" style={{marginBottom: 20}}to="/movies/new">New Movie</Link>
                 <p>The number of movies avilabe are {filteredMovies.length}</p>
                 {filteredMovies.length === 0 ? <p>There are no Movies to be displayed</p>:
                 

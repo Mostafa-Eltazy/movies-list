@@ -1,4 +1,5 @@
 
+import { getGenre } from './fakeGereService';
 const movies = [
     {
         id:1,
@@ -85,4 +86,42 @@ const movies = [
 ];
 export function getMovies(){
     return movies;
+}
+export function getMovie(ID){
+     
+     return  movies.find(m=>m.id===parseInt(ID))
+    }
+export function saveMovie(movie){
+    
+    
+    const movieInDB = movies.find(m=>m.id===parseInt(movie.id))
+    if (!movieInDB){
+        let movieInDB = {}
+        movieInDB.title = movie.title
+        const thegenre = getGenre(movie.genre)
+        movieInDB.genre = thegenre
+        movieInDB.numberInStock = parseInt(movie.numberInStock)
+        movieInDB.dailyRentalRate = parseInt(movie.dailyRentalRate)
+        if(!movie.id){ 
+                let newID = Date.now().toString()
+                console.log(newID,Date.now().toString() )
+                movieInDB.id= parseInt(newID)
+                movies.push(movieInDB)
+        }
+    }else
+    {
+        
+        movieInDB.title = movie.title
+        const thegenre = getGenre(movie.genre)
+        movieInDB.genre = thegenre
+        movieInDB.numberInStock = parseInt(movie.numberInStock)
+        movieInDB.dailyRentalRate = parseInt(movie.dailyRentalRate)
+        if(!movie.id){ 
+                let newID = Date.now().toString()
+                console.log(newID,Date.now().toString() )
+                movieInDB.id= parseInt(newID)
+                movies.push(movieInDB)
+        }
+    }
+
 }

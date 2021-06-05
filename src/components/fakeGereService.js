@@ -7,3 +7,7 @@ export const genres = [
 export function getGenres(){
     return genres.filter(g=>g)
 }
+export function getGenre(genreID){
+    console.log( genres.find(g=>g.id===parseInt(genreID)))
+    return genres.find(g=>g.id===parseInt(genreID))
+}
