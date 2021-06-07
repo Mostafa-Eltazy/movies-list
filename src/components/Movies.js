@@ -5,17 +5,18 @@ import {getGenres} from './fakeGereService'
 import {useState, useEffect} from 'react'
 import Pagination from './Pagination'
 import MoviesTable from './MoviesTable'
-import _ from 'lodash'
 import ListGroup from './listGroup'
+import SearchBox from './SearchBox';
+import _ from 'lodash'
 
 
 
 const Movies = () => {
     const [movies, setMovies] = useState(getMovies())
     const [genres, setgenres] = useState(getGenres())
-    const [liked, setLiked] = useState()
     const [pageSize, setpageSize] = useState(4)
     const [selectedGenre, setselectedGenre] = useState("")
+    const [searchQuery, setsearchQuery] = useState("")
     const [currentPage, setCurrentPage] = useState(1)
     const [sortColumn, setsortColumn] = useState('title')
     const [order, setOrder] = useState('asc')
@@ -23,7 +24,9 @@ const Movies = () => {
     
   // functions
     const performingFiltration = (selectedGenre)=>{
-        return selectedGenre ? movies.filter(m=> m.genre.id === selectedGenre.id) : movies
+        return  searchQuery ? movies.filter(m=>m.title.toLowerCase().startsWith(searchQuery.toLowerCase()))
+                : selectedGenre ? movies.filter(m=> m.genre.id === selectedGenre.id) : movies
+        
     }
     const performingSorting = (items) => {
         return _.orderBy(items, [sortColumn],[order])
@@ -38,7 +41,13 @@ const Movies = () => {
     // Handlers
     const handleGenreSelect = (g) =>{
         setselectedGenre(g)
+        setsearchQuery("")
         onPagePagination(1)        
+    }
+    const handleSearch = (query)=>{
+        setsearchQuery(query)
+        setselectedGenre("")
+        setCurrentPage(1)
     }
     const handleSorting = (path)=>{
         console.log(path)
@@ -74,8 +83,12 @@ const Movies = () => {
             <div className="col">
                 <Link className="btn btn-primary" style={{marginBottom: 20}}to="/movies/new">New Movie</Link>
                 <p>The number of movies avilabe are {filteredMovies.length}</p>
-                {filteredMovies.length === 0 ? <p>There are no Movies to be displayed</p>:
+                <SearchBox
+                    value={searchQuery}
+                    onChange={handleSearch}
+                />
                 
+                {filteredMovies.length === 0 ? <p>There are no Movies to be displayed</p>:
                 <MoviesTable 
                 movies={paginatedMovies}
                 onLike={handleLike}
