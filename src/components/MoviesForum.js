@@ -2,58 +2,79 @@ import React from 'react'
 import Joi, { schema } from 'joi-browser'
 import Input from './Input'
 import {useState, useEffect} from 'react'
-import { genres, getGenres } from './fakeGereService';
-import { saveMovie, getMovie, getMovies } from './fakeMovieService';
+import { genres, getGenres } from '../Services/genreService';
+import { saveMovie, getMovie, getMovies } from '../Services/moviesService';
 import Select from './Select';
+import { updateWith } from 'lodash';
 
 
 const MoviesForum = ({match,history}) => {
    
-    const [data, setdata] = useState({title:"",genre:"", numberInStock:"",dailyRentalRate:""})
+    const [data, setdata] = useState({title:"",genre:{_id:"",name:""}, numberInStock:"",dailyRentalRate:""})
     const [errors, setErrors] = useState({})
     const [gen, setGenres] = useState([])
     const schema = {
-        id: Joi.number(),
+        _id: Joi.string(),
         title: Joi.string().required().label("Title"),
         genre: Joi.required().label("Genre"),
         numberInStock: Joi.number().required().min(0).max(100).label("Number in Stock"),
         dailyRentalRate: Joi.number().required().min(0).max(10).label("Rate")
     };
     useEffect (()=>{
-        const gen = getGenres();
-        setGenres(gen)
-        //---------------------
+        async function fetchGenres(){
+            const {data} = await getGenres()
+            const genres = [...data]
+            setGenres(genres)
+            }
+        async function fetchMovie(movieID){
+            try{
+                const {data} = await getMovie(movieID)
+                const movie = data
+                const movieData = mapToViewModel(movie)
+                setdata(movieData)
+                
+            }catch(ex){
+                if (ex.response && ex.response.status) 
+                    history.replace("/not-found");
+            }
+            }
+        fetchGenres()
         const movieID = match.params.id
         if (!movieID) return;
-        //----------------------
-        const movie = getMovie(movieID)
-        if (!movie) return history.replace("/not-found");
-        //----------------------
-        const movieData = mapToViewModel(movie)
-        setdata(movieData)
+        fetchMovie(movieID)
     },[])
         
     
     const mapToViewModel = (movie)=> {
         return {
-            id : movie.id,
+            _id : movie._id,
             title : movie.title,
-            genre : movie.genre.id,
+            genre : {_id:movie.genre._id,name:movie.genre.name },
             numberInStock : movie.numberInStock,
             dailyRentalRate : movie.dailyRentalRate
         };
     }
-    const handleSubmit = e => {
+    const doSubmit = async () =>{
+         await saveMovie(data)
+    }
+    const handleSubmit = async e => {
         e.preventDefault();
         const errors = validate()
         setErrors({errors : errors||{}})
         if (errors) return;
-        saveMovie(data)
+        try{
+            await doSubmit()
+        }catch(ex){
+            console.log("the error",ex.response)
+        }
         history.push("/movies")
         
     }
     const handleChange = ({currentTarget: input}) => {
+        
         const Updateddata = {...data}
+        // console.log("INput.NAME",input.name)
+        // console.log("INput.VALUE",input.value)
         Updateddata[input.name] = input.value
         setdata(Updateddata)
     }
@@ -66,6 +87,7 @@ const MoviesForum = ({match,history}) => {
             errors[item.path[0]] = item.message
         return errors
     }
+    
     return (
         <div>
             <h1>Movies Form : {match.params.id  ? match.params.id:"Add Movie"}</h1>
@@ -80,7 +102,7 @@ const MoviesForum = ({match,history}) => {
                 />
                 <Select
                     name="genre"
-                    value={data.genre}
+                    value={data.genre._id}
                     label="Genre"
                     options={gen}
                     onChange={handleChange}

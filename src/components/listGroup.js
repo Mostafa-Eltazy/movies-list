@@ -3,6 +3,7 @@ import {useState} from 'react'
 import {filtered} from '../components/Movies'
 
 const ListGroup = ({genres,selectedGenre, handleGenreSelect}) => {
+    
     return (
         <div>
            <ul className="list-group">
@@ -11,8 +12,8 @@ const ListGroup = ({genres,selectedGenre, handleGenreSelect}) => {
                     </li>
                 {genres.map(g => 
                     <li onClick={()=>handleGenreSelect(g)}
-                    key={g.id}
-                    className={selectedGenre.id === g.id ? "list-group-item active":"list-group-item"}>{g.name}
+                    key={g._id}
+                    className={selectedGenre._id === g._id ? "list-group-item active":"list-group-item"}>{g.name}
                     </li>
                 )}
           </ul>

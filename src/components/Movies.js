@@ -1,31 +1,48 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import {getMovies} from './fakeMovieService'
-import {getGenres} from './fakeGereService'
+import {getMovies, deleteMovie} from '../Services/moviesService'
+import {getGenres} from '../Services/genreService'
 import {useState, useEffect} from 'react'
 import Pagination from './Pagination'
 import MoviesTable from './MoviesTable'
 import ListGroup from './listGroup'
 import SearchBox from './SearchBox';
 import _ from 'lodash'
+import { toast } from 'react-toastify'
 
 
 
 const Movies = () => {
-    const [movies, setMovies] = useState(getMovies())
-    const [genres, setgenres] = useState(getGenres())
+    const [genres, setgenres] = useState([])
     const [pageSize, setpageSize] = useState(4)
     const [selectedGenre, setselectedGenre] = useState("")
     const [searchQuery, setsearchQuery] = useState("")
     const [currentPage, setCurrentPage] = useState(1)
     const [sortColumn, setsortColumn] = useState('title')
     const [order, setOrder] = useState('asc')
+    const [movies, setMovies] = useState([])
     
     
+    useEffect(()=>{
+        async function fetchGenres(){
+        const {data} = await getGenres()
+        const genres = [...data]
+        setgenres(genres)
+        }
+        async function fetchMovies(){
+        const {data} = await getMovies()
+        const moviesList = [...data]
+        setMovies(moviesList)
+        }
+    fetchGenres();
+    fetchMovies();
+
+    },[])
   // functions
-    const performingFiltration = (selectedGenre)=>{
+  const performingFiltration = (selectedGenre)=>{
+
         return  searchQuery ? movies.filter(m=>m.title.toLowerCase().startsWith(searchQuery.toLowerCase()))
-                : selectedGenre ? movies.filter(m=> m.genre.id === selectedGenre.id) : movies
+                : selectedGenre ? movies.filter(m=> m.genre._id === selectedGenre._id) : movies
         
     }
     const performingSorting = (items) => {
@@ -56,22 +73,28 @@ const Movies = () => {
     }
     const handleLike = (id) => {
         setMovies(movies.map(movie=>
-          id === movie.id ?
+          id === movie._id ?
           {...movie, liked:!movie.liked}
           :movie));
       }
-      const handleDelete = (movie) => {
-          
-      setMovies(movies.filter(m=>m.id !== movie.id));
+      const handleDelete = async (movie) => {
+        const originalMovies = [...movies]
+        const newMoviesList = originalMovies.filter(m=>m._id !== movie._id)
+        try {
+            await deleteMovie(movie._id)
+            setMovies(newMoviesList)
+        } catch (ex){
+            if(ex.response && ex.response.status === 404){
+                toast.error("This movie has been deleted")
+                setMovies(originalMovies)
+            }
+        }
       }
   
     // Variables
     const filteredMovies = performingFiltration(selectedGenre)
     const sortedMovies = performingSorting(filteredMovies)
     const paginatedMovies = performingPagination(sortedMovies, currentPage, pageSize)
-   
-    console.log(sortedMovies)
-
     return (
         <div className="row">
             <div className="col-2">

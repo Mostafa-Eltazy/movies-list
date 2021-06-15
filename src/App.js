@@ -1,27 +1,22 @@
 import 'bootstrap/dist/css/bootstrap.min.css'
+import { ToastContainer } from 'react-toastify';
 import {Route, Switch, Redirect} from 'react-router-dom'
 import Movies from './components/Movies'
 import Customers from './components/Customers';
 import Rentals from './components/Rentals';
 import NotFound from './components/NotFound';
 import NavBar from './components/NavBar';
-import './App.css';
 import MoviesForum from './components/MoviesForum';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
+import 'react-toastify/dist/ReactToastify.css'
+import './App.css';
 
 function App() {
-  
-  
-  // useEffect(()=>{
-  //   setMovies(getMovies());
-  //   setgenres(getGenres())
-  // })
-    
-
 
   return (
     <div>
+      <ToastContainer/>
       <NavBar/>
       <div className='container'>
         <Switch>
